@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    body {
+      zoom: 250%;
+    }
+  </style>
+  <title>Grid 20</title>
+  <style>
+    body {
+      background-color: black;
+    }
+
+    table {
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    td {
+      border: 1px solid black;
+      width: 100px;
+      height: 100px;
+      text-align: center;
+    }
+
+    td:nth-child(2) {
+      background-color: green;
+    }
+
+    tr:nth-child(2) td {
+      background-color: yellow;
+    }
+
+    tr:nth-child(2) td:nth-child(2) {
+      font-weight: bold;
+      background-color: red;
+    }
+    h1 {
+      color: green;
+    }
+    h2 {
+      color: yellow
+    }
+    div {
+      color: white
+    }
+  </style>
+</head>
+<body>
+  <h1 style="font-size: 24px;">&nbsp;&nbsp;&nbsp;&nbsp;Here is your CrossConnect!</h1>
+  <h2 style="font-size: 30px;" onclick="showTooltip()" title="CrossConnect is a platform for connecting people."> &nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <u>What is CrossConnect?</u></h2>
+  
+  <div id="tooltip" style="display: none;">
+    <p style="font-size: 30px;">The person on top, Appreciate them!</p>
+    <p style="font-size: 30px;">The person on the bottom, Love them!</p>
+    <p style="font-size: 30px;">The person on each side, Share something with them!</p>
+  </div>
+  
+  <script>
+    function showTooltip() {
+      var tooltip = document.getElementById("tooltip");
+      tooltip.style.display = "block";
+    }
+  </script>
+
+  <table>
+    
+    <tr>
+      
+      <td></td>
+      
+      <td>   Chief    </td>
+      
+      <td></td>
+      
+    </tr>
+    
+    <tr>
+      
+      <td>   Faven    </td>
+      
+      <td>   Romeo    </td>
+      
+      <td> Kristopher </td>
+      
+    </tr>
+    
+    <tr>
+      
+      <td></td>
+      
+      <td>   Abesha   </td>
+      
+      <td></td>
+      
+    </tr>
+    
+  </table>
+</body>
+
+</html>

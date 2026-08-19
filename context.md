@@ -148,7 +148,7 @@ python app.py
 - Family site: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 - Admin: [http://127.0.0.1:8000/admin](http://127.0.0.1:8000/admin)
 
-Default admin password (change in `.env`): `familyadmin`
+Default admin password (change in `.env`): `CrossConnect2026`
 
 Rebuild static files without the admin UI:
 

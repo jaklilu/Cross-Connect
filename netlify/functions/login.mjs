@@ -3,7 +3,7 @@ export default async (req) => {
     return new Response("Method not allowed", { status: 405 });
   }
 
-  const expected = process.env.ADMIN_PASSWORD || "familyadmin";
+  const expected = process.env.ADMIN_PASSWORD || "CrossConnect2026";
   let body = {};
   try {
     body = await req.json();

@@ -50,7 +50,7 @@ _load_env()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or secrets.token_hex(16)
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "familyadmin")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "CrossConnect2026")
 
 
 def rebuild_site():

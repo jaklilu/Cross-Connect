@@ -40,7 +40,7 @@ export default async (req) => {
   }
 
   if (req.method === "PUT") {
-    const expected = process.env.ADMIN_PASSWORD || "familyadmin";
+    const expected = process.env.ADMIN_PASSWORD || "CrossConnect2026";
     const provided = req.headers.get("x-admin-password") || "";
     if (provided !== expected) {
       return new Response("Unauthorized", { status: 401, headers: corsHeaders() });

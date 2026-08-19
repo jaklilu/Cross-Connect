@@ -94,7 +94,7 @@
   {% endwith %}
 
   <div class="cards">
-    <div class="card"><strong>{{ data.assignment_year }}</strong>Assignment year</div>
+    <div class="card"><strong>{{ last_refreshed_display }}</strong>Last refreshed</div>
     <div class="card"><strong>{{ data.people|length }}</strong>People</div>
     <div class="card"><strong>{{ card_count }}</strong>Personal cards</div>
     {% for key, label, help in groups %}
@@ -103,10 +103,11 @@
   </div>
 
   <section>
-    <h2>Start a new year</h2>
-    <p class="help">Rotates everyone to new left, right, top, and bottom partners. Over time each person connects with everyone in their group — no repeats from the year before.</p>
-    <form method="post" action="{{ url_for('admin_year') }}" onsubmit="return confirm('Move pairings to {{ data.assignment_year + 1 }} with new partners for everyone?');">
-      <button class="year" type="submit">Refresh pairings for {{ data.assignment_year + 1 }}</button>
+    <h2>Refresh pairings</h2>
+    <p class="help">Rotates everyone to new left, right, top, and bottom partners. Over time each person connects with everyone in their group.</p>
+    <p class="help">Last refreshed: <strong>{{ last_refreshed_display }}</strong></p>
+    <form method="post" action="{{ url_for('admin_year') }}" onsubmit="return confirm('Refresh pairings for everyone with new partners?');">
+      <button class="year" type="submit">Refresh Pairing</button>
     </form>
   </section>
 

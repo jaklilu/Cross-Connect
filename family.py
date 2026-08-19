@@ -1,6 +1,7 @@
 """Cousin's CrossConnect family roster and card assignment."""
 
 import json
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -29,6 +30,7 @@ GROUP_LISTS = {
 
 INITIAL = {
     "assignment_year": 2026,
+    "last_refreshed": None,
     "site_title": "My Webpage",
     "welcome": "Welcome to Cousin's CrossConnect!",
     "intro": "This is some text on my page.",
@@ -258,10 +260,17 @@ def update_settings(welcome, intro, site_title):
     save_data(data)
 
 
+def format_refresh_date(iso):
+    if not iso:
+        return "Not yet"
+    return date.fromisoformat(iso).strftime("%B %d, %Y")
+
+
 def new_year():
-    """Advance the assignment year so pairings rotate to new partners."""
+    """Advance the assignment year and record when pairings were refreshed."""
     data = load_data()
     data["assignment_year"] = int(data.get("assignment_year", BASE_YEAR)) + 1
+    data["last_refreshed"] = date.today().isoformat()
     save_data(data)
     return data["assignment_year"]
 

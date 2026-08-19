@@ -9,6 +9,7 @@ import {
   removePerson,
   renamePerson,
   updateSettings,
+  formatRefreshDate,
 } from "./family.js";
 import {
   clearAdminPassword,
@@ -84,16 +85,17 @@ function renderAdmin() {
 
   document.getElementById("admin-panel").innerHTML = `
     <div class="cards">
-      <div class="card"><strong>${data.assignment_year}</strong>Assignment year</div>
+      <div class="card"><strong>${formatRefreshDate(data.last_refreshed)}</strong>Last refreshed</div>
       <div class="card"><strong>${data.people.length}</strong>People</div>
       <div class="card"><strong>${cardCount}</strong>Personal cards</div>
       ${statCards}
     </div>
 
     <section>
-      <h2>Start a new year</h2>
-      <p class="help">Rotates everyone to new left, right, top, and bottom partners. Over time each person connects with everyone in their group — no repeats from the year before.</p>
-      <button id="new-year-btn" class="year" type="button">Refresh pairings for ${Number(data.assignment_year) + 1}</button>
+      <h2>Refresh pairings</h2>
+      <p class="help">Rotates everyone to new left, right, top, and bottom partners. Over time each person connects with everyone in their group.</p>
+      <p class="help">Last refreshed: <strong>${formatRefreshDate(data.last_refreshed)}</strong></p>
+      <button id="new-year-btn" class="year" type="button">Refresh Pairing</button>
     </section>
 
     <section>
@@ -134,11 +136,10 @@ async function persist(message) {
 
 function bindAdminEvents() {
   document.getElementById("new-year-btn").addEventListener("click", async () => {
-    const next = Number(data.assignment_year) + 1;
-    if (!window.confirm(`Move pairings to ${next} with new partners for everyone?`)) return;
+    if (!window.confirm("Refresh pairings for everyone with new partners?")) return;
     try {
       newYear(data);
-      await persist(`New year started. Pairings for ${data.assignment_year} are ready.`);
+      await persist(`Pairings refreshed on ${formatRefreshDate(data.last_refreshed)}.`);
     } catch (err) {
       showMessage(err.message, true);
     }

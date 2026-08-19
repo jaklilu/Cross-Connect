@@ -161,8 +161,18 @@ export function updateSettings(data, welcome, intro, siteTitle) {
   data.site_title = siteTitle.trim() || data.site_title;
 }
 
+export function formatRefreshDate(iso) {
+  if (!iso) return "Not yet";
+  return new Date(`${iso}T12:00:00`).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
 export function newYear(data) {
   data.assignment_year = Number(data.assignment_year || BASE_YEAR) + 1;
+  data.last_refreshed = new Date().toISOString().slice(0, 10);
   return data.assignment_year;
 }
 

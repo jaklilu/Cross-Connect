@@ -22,6 +22,7 @@ from family import (
     add_person,
     build_grids,
     group_counts,
+    format_refresh_date,
     grouped_people,
     load_data,
     move_person,
@@ -132,6 +133,7 @@ def admin_home():
         grouped=grouped_people(data),
         counts=group_counts(data),
         card_count=len(build_grids(data)),
+        last_refreshed_display=format_refresh_date(data.get("last_refreshed")),
     )
 
 
@@ -188,9 +190,10 @@ def admin_rename():
 @app.route("/admin/year", methods=["POST"])
 @admin_required
 def admin_year():
-    year = new_year()
+    new_year()
+    data = load_data()
     rebuild_site()
-    flash(f"New year started. Pairings for {year} are ready.")
+    flash(f"Pairings refreshed on {format_refresh_date(data.get('last_refreshed'))}.")
     return redirect(url_for("admin_home"))
 
 

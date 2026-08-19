@@ -217,18 +217,23 @@ function showAdmin() {
   renderAdmin();
 }
 
+async function doLogin() {
+  const password = document.getElementById("password").value;
+  const ok = await login(password);
+  if (!ok) {
+    showMessage("That password did not match.", true);
+    return;
+  }
+  showAdmin();
+  showMessage("Signed in.");
+}
+
 async function boot() {
   data = await fetchFamily();
 
-  document.getElementById("login-btn").addEventListener("click", async () => {
-    const password = document.getElementById("password").value;
-    const ok = await login(password);
-    if (!ok) {
-      showMessage("That password did not match.", true);
-      return;
-    }
-    showAdmin();
-    showMessage("Signed in.");
+  document.getElementById("login-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    await doLogin();
   });
 
   document.getElementById("sign-out").addEventListener("click", () => {

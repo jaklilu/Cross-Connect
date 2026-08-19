@@ -1,0 +1,397 @@
+{
+  "assignment_year": 2026,
+  "site_title": "My Webpage",
+  "welcome": "Welcome to Cousin's CrossConnect!",
+  "intro": "This is some text on my page.",
+  "people": [
+    {
+      "name": "Ken",
+      "group": "65plus"
+    },
+    {
+      "name": "Etalem",
+      "group": "65plus"
+    },
+    {
+      "name": "Solomon",
+      "group": "65plus"
+    },
+    {
+      "name": "Vero",
+      "group": "65plus"
+    },
+    {
+      "name": "Tony",
+      "group": "65plus"
+    },
+    {
+      "name": "Chief",
+      "group": "65plus"
+    },
+    {
+      "name": "Hailelul",
+      "group": "65plus"
+    },
+    {
+      "name": "Martha",
+      "group": "65plus"
+    },
+    {
+      "name": "Joseph",
+      "group": "65plus"
+    },
+    {
+      "name": "Loreta",
+      "group": "65plus"
+    },
+    {
+      "name": "Senny",
+      "group": "65plus"
+    },
+    {
+      "name": "Belle",
+      "group": "65plus"
+    },
+    {
+      "name": "Membe",
+      "group": "65plus"
+    },
+    {
+      "name": "Abesha",
+      "group": "under12"
+    },
+    {
+      "name": "Helah",
+      "group": "under12"
+    },
+    {
+      "name": "Kayla",
+      "group": "under12"
+    },
+    {
+      "name": "Layla",
+      "group": "under12"
+    },
+    {
+      "name": "Soliana",
+      "group": "under12"
+    },
+    {
+      "name": "Amanu",
+      "group": "20s30s"
+    },
+    {
+      "name": "Danu",
+      "group": "20s30s"
+    },
+    {
+      "name": "Maya",
+      "group": "20s30s"
+    },
+    {
+      "name": "Abel",
+      "group": "20s30s"
+    },
+    {
+      "name": "Natu",
+      "group": "20s30s"
+    },
+    {
+      "name": "Bethel",
+      "group": "20s30s"
+    },
+    {
+      "name": "Liyu",
+      "group": "20s30s"
+    },
+    {
+      "name": "Menna",
+      "group": "20s30s"
+    },
+    {
+      "name": "Josh M",
+      "group": "20s30s"
+    },
+    {
+      "name": "Faven",
+      "group": "20s30s"
+    },
+    {
+      "name": "Hosanna",
+      "group": "20s30s"
+    },
+    {
+      "name": "Amara",
+      "group": "20s30s"
+    },
+    {
+      "name": "Emu",
+      "group": "20s30s"
+    },
+    {
+      "name": "Jano",
+      "group": "20s30s"
+    },
+    {
+      "name": "Elias",
+      "group": "30s40s"
+    },
+    {
+      "name": "Veronica",
+      "group": "30s40s"
+    },
+    {
+      "name": "Eskender",
+      "group": "30s40s"
+    },
+    {
+      "name": "Sal",
+      "group": "30s40s"
+    },
+    {
+      "name": "Josh A",
+      "group": "30s40s"
+    },
+    {
+      "name": "Romeo",
+      "group": "30s40s"
+    },
+    {
+      "name": "Kristopher",
+      "group": "30s40s"
+    },
+    {
+      "name": "Daweet",
+      "group": "30s40s"
+    },
+    {
+      "name": "Nadeen",
+      "group": "30s40s"
+    },
+    {
+      "name": "Betu",
+      "group": "30s40s"
+    },
+    {
+      "name": "Matti",
+      "group": "30s40s"
+    },
+    {
+      "name": "Macki",
+      "group": "30s40s"
+    },
+    {
+      "name": "Mickey",
+      "group": "30s40s"
+    },
+    {
+      "name": "Neb",
+      "group": "30s40s"
+    },
+    {
+      "name": "Mesfin",
+      "group": "50s60s"
+    },
+    {
+      "name": "Fubu",
+      "group": "50s60s"
+    },
+    {
+      "name": "Zaren",
+      "group": "50s60s"
+    },
+    {
+      "name": "Jay",
+      "group": "50s60s"
+    },
+    {
+      "name": "Gilu",
+      "group": "50s60s"
+    },
+    {
+      "name": "Mimi",
+      "group": "50s60s"
+    },
+    {
+      "name": "Tutu",
+      "group": "50s60s"
+    },
+    {
+      "name": "Mamiye",
+      "group": "50s60s"
+    },
+    {
+      "name": "Sammy",
+      "group": "50s60s"
+    },
+    {
+      "name": "Nany",
+      "group": "50s60s"
+    },
+    {
+      "name": "Garae",
+      "group": "50s60s"
+    }
+  ],
+  "lists": {
+    "elders_20s": [
+      "Ken",
+      "Etalem",
+      "Solomon",
+      "Vero",
+      "Tony",
+      "Chief",
+      "Hailelul",
+      "Martha",
+      "Joseph",
+      "Loreta",
+      "Senny",
+      "Belle",
+      "Membe"
+    ],
+    "thirties_for_20s": [
+      "Elias",
+      "Eskender",
+      "Veronica",
+      "Sal",
+      "Josh A",
+      "Romeo",
+      "Daweet",
+      "Kristopher",
+      "Betu",
+      "Matti",
+      "Macki",
+      "Nadeen",
+      "Mickey",
+      "Neb"
+    ],
+    "twenties": [
+      "Amanu",
+      "Danu",
+      "Maya",
+      "Abel",
+      "Natu",
+      "Bethel",
+      "Liyu",
+      "Menna",
+      "Josh M",
+      "Faven",
+      "Hosanna",
+      "Amara",
+      "Emu",
+      "Jano"
+    ],
+    "kids_20s": [
+      "Abesha",
+      "Helah",
+      "Kayla",
+      "Layla",
+      "Soliana"
+    ],
+    "elders_30s": [
+      "Membe",
+      "Etalem",
+      "Belle",
+      "Solomon",
+      "Tony",
+      "Chief",
+      "Martha",
+      "Vero",
+      "Joseph",
+      "Loreta",
+      "Hailelul",
+      "Senny",
+      "Ken"
+    ],
+    "thirties": [
+      "Elias",
+      "Veronica",
+      "Eskender",
+      "Sal",
+      "Josh A",
+      "Romeo",
+      "Kristopher",
+      "Daweet",
+      "Nadeen",
+      "Betu",
+      "Matti",
+      "Macki",
+      "Mickey",
+      "Neb"
+    ],
+    "twenties_for_30s": [
+      "Amanu",
+      "Maya",
+      "Liyu",
+      "Bethel",
+      "Abel",
+      "Faven",
+      "Josh M",
+      "Amara",
+      "Hosanna",
+      "Emu",
+      "Danu",
+      "Menna",
+      "Jano",
+      "Natu"
+    ],
+    "kids_30s": [
+      "Abesha",
+      "Helah",
+      "Kayla",
+      "Layla",
+      "Soliana"
+    ],
+    "elders_50s": [
+      "Hailelul",
+      "Etalem",
+      "Solomon",
+      "Belle",
+      "Tony",
+      "Martha",
+      "Chief",
+      "Ken",
+      "Joseph",
+      "Loreta",
+      "Vero",
+      "Senny",
+      "Membe"
+    ],
+    "thirties_for_50s": [
+      "Mickey",
+      "Elias",
+      "Eskender",
+      "Sal",
+      "Josh A",
+      "Romeo",
+      "Daweet",
+      "Kristopher",
+      "Matti",
+      "Betu",
+      "Macki",
+      "Veronica",
+      "Neb",
+      "Nadeen"
+    ],
+    "fifties": [
+      "Mesfin",
+      "Fubu",
+      "Zaren",
+      "Jay",
+      "Gilu",
+      "Mimi",
+      "Tutu",
+      "Mamiye",
+      "Sammy",
+      "Nany",
+      "Garae"
+    ],
+    "kids_50s": [
+      "Layla",
+      "Soliana",
+      "Kayla",
+      "Helah",
+      "Abesha"
+    ]
+  }
+}

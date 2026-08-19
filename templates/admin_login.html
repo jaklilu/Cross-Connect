@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Admin login — CrossConnect</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+    h1 { color: green; }
+    label { display: block; margin-bottom: 8px; }
+    input[type="password"] {
+      padding: 8px;
+      font-size: 16px;
+      width: 260px;
+    }
+    button {
+      margin-top: 12px;
+      padding: 8px 16px;
+      font-size: 16px;
+      background-color: green;
+      color: white;
+      border: 0;
+      cursor: pointer;
+    }
+    .error { color: red; margin-top: 12px; }
+    a { color: yellow; }
+  </style>
+</head>
+<body>
+  <h1>CrossConnect admin</h1>
+  <p>Sign in to add people, fix ages, and start a new year.</p>
+  <form method="post">
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" autofocus required>
+    <div><button type="submit">Sign in</button></div>
+  </form>
+  {% if error %}
+  <p class="error">{{ error }}</p>
+  {% endif %}
+  <p><a href="/">Back to family site</a></p>
+</body>
+</html>

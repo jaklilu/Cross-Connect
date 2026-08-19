@@ -4,3 +4,4 @@ venv/
 .venv/
 .env
 Copied from PythonAnywhere/
+data/*.tmp

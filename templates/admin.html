@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Manage CrossConnect</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 24px;
+      line-height: 1.4;
+    }
+    h1, h2 { color: green; }
+    a { color: yellow; }
+    .bar {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .flash {
+      background-color: green;
+      color: black;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      font-weight: bold;
+    }
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .card {
+      background: #111;
+      border: 1px solid green;
+      padding: 12px 16px;
+      min-width: 120px;
+    }
+    .card strong { color: yellow; display: block; font-size: 22px; }
+    section {
+      background: #111;
+      border: 1px solid #333;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    label { display: block; margin: 8px 0 4px; }
+    input[type="text"], select, textarea {
+      padding: 6px;
+      font-size: 15px;
+      min-width: 220px;
+    }
+    textarea { width: min(520px, 100%); height: 60px; }
+    button, .btn {
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      border: 0;
+      background-color: green;
+      color: white;
+    }
+    button.danger { background-color: red; }
+    button.year { background-color: red; font-size: 16px; padding: 10px 18px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+    th, td {
+      border: 1px solid #333;
+      padding: 8px;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th { background: #1a1a1a; color: yellow; }
+    .row-form { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .help { color: #ccc; font-size: 14px; }
+    .muted { color: #888; }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <h1 style="margin: 0;">Manage CrossConnect</h1>
+    <a href="/">View family site</a>
+    <form method="post" action="{{ url_for('admin_logout') }}">
+      <button type="submit">Sign out</button>
+    </form>
+  </div>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="flash">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="cards">
+    <div class="card"><strong>{{ data.assignment_year }}</strong>Assignment year</div>
+    <div class="card"><strong>{{ data.people|length }}</strong>People</div>
+    <div class="card"><strong>{{ card_count }}</strong>Personal cards</div>
+    {% for key, label, help in groups %}
+    <div class="card"><strong>{{ counts.get(key, 0) }}</strong>{{ label }}</div>
+    {% endfor %}
+  </div>
+
+  <section>
+    <h2>Start a new year</h2>
+    <p class="help">This reshuffles who sits left, right, top, and bottom on every card. Use it once a year after you have ages up to date.</p>
+    <form method="post" action="{{ url_for('admin_year') }}" onsubmit="return confirm('Reshuffle all pairings and move to {{ data.assignment_year + 1 }}?');">
+      <button class="year" type="submit">Refresh pairings for {{ data.assignment_year + 1 }}</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Add a person</h2>
+    <form method="post" action="{{ url_for('admin_add') }}">
+      <label for="name">Name</label>
+      <input id="name" name="name" type="text" required>
+      <label for="group">Age group</label>
+      <select id="group" name="group" required>
+        {% for key, label, help in groups %}
+        <option value="{{ key }}">{{ label }} — {{ help }}</option>
+        {% endfor %}
+      </select>
+      <div style="margin-top: 12px;"><button type="submit">Add person</button></div>
+    </form>
+  </section>
+
+  {% for key, label, help in groups %}
+  <section>
+    <h2>{{ label }}</h2>
+    <p class="help">{{ help }}</p>
+    {% if grouped.get(key) %}
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Correct age / rename</th>
+        <th>Remove</th>
+      </tr>
+      {% for person in grouped[key] %}
+      <tr>
+        <td>{{ person.name }}</td>
+        <td>
+          <form class="row-form" method="post" action="{{ url_for('admin_move') }}">
+            <input type="hidden" name="name" value="{{ person.name }}">
+            <select name="group">
+              {% for gkey, glabel, ghelp in groups %}
+              <option value="{{ gkey }}" {% if gkey == person.group %}selected{% endif %}>{{ glabel }}</option>
+              {% endfor %}
+            </select>
+            <button type="submit">Save age</button>
+          </form>
+          <form class="row-form" method="post" action="{{ url_for('admin_rename') }}" style="margin-top: 6px;">
+            <input type="hidden" name="old_name" value="{{ person.name }}">
+            <input type="text" name="new_name" value="{{ person.name }}" required>
+            <button type="submit">Rename</button>
+          </form>
+        </td>
+        <td>
+          <form method="post" action="{{ url_for('admin_remove') }}" onsubmit="return confirm('Remove {{ person.name }}?');">
+            <input type="hidden" name="name" value="{{ person.name }}">
+            <button class="danger" type="submit">Remove</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+    <p class="muted">No one in this group yet.</p>
+    {% endif %}
+  </section>
+  {% endfor %}
+
+  <section>
+    <h2>Page text</h2>
+    <form method="post" action="{{ url_for('admin_settings') }}">
+      <label for="site_title">Browser title</label>
+      <input id="site_title" name="site_title" type="text" value="{{ data.site_title }}">
+      <label for="welcome">Heading</label>
+      <input id="welcome" name="welcome" type="text" value="{{ data.welcome }}">
+      <label for="intro">Intro line</label>
+      <textarea id="intro" name="intro">{{ data.intro }}</textarea>
+      <div style="margin-top: 12px;"><button type="submit">Save text</button></div>
+    </form>
+  </section>
+
+  <section>
+    <h2>Publish to Netlify</h2>
+    <p class="help">Admin changes update the local site immediately and rewrite the <code>site</code> folder. Push to GitHub when you want the public Netlify site to match.</p>
+    <form method="post" action="{{ url_for('admin_rebuild') }}">
+      <button type="submit">Rebuild Netlify files now</button>
+    </form>
+  </section>
+</body>
+</html>

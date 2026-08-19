@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>My Webpage</title>
+  <title>{{ site_title }}</title>
   <style>
     body {
       background-color: black;
@@ -38,8 +38,8 @@
   </style>
 </head>
 <body>
-  <h1 style="font-size: 24px;">Welcome to Cousin's CrossConnect!</h1>
-  <p>This is some text on my page.</p>
+  <h1 style="font-size: 24px;">{{ welcome }}</h1>
+  <p>{{ intro }}</p>
 
   {% for grid in grids %}
   {% set middle_cell = grid[1][1] %}

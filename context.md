@@ -1,8 +1,8 @@
 # Cousin's CrossConnect — project context
 
-Last updated: 18 August 2026
+Last updated: 19 August 2026
 
-This file is the running memory for the project: why it exists, how the original PythonAnywhere app worked, what was rebuilt for Netlify, and how to manage people and yearly pairings.
+This file is the running memory for the project: why it exists, how the original PythonAnywhere app worked, what was rebuilt for Netlify, and how to manage people and pairings.
 
 ## Purpose
 
@@ -27,7 +27,9 @@ Colors (keep these on the public pages):
 - Middle row (left / you / right): **yellow**
 - Center cell (you): **red**, bold
 
-Original live site (still on PythonAnywhere until shut down): [https://jaklilu.pythonanywhere.com/](https://jaklilu.pythonanywhere.com/)
+Original PythonAnywhere site (can be shut down once Netlify is verified): [https://jaklilu.pythonanywhere.com/](https://jaklilu.pythonanywhere.com/)
+
+GitHub repo: [https://github.com/jaklilu/Cross-Connect](https://github.com/jaklilu/Cross-Connect)
 
 ## Age groups
 
@@ -57,100 +59,152 @@ For each card-holder group (20s&30s, then 30s&40s, then 50s&60s):
   - 20s&30s cards: left is 30s&40s
   - 30s&40s cards: left is 20s&30s
   - 50s&60s cards: left is 30s&40s
-- **Top:** next name in the 65+ list (cycled; each card-holder section has its own order of the same 13 elders)
-- **Bottom:** next name in the under-12 list (cycled; each section has its own kid order)
+- **Top:** elder at same index in the 65+ list for that section
+- **Bottom:** kid at same index in the under-12 list for that section
 
-There is no login or public “new year” button on the family site. A new year originally meant reordering the name lists by hand and reloading Flask. The admin page now advances the assignment year, which rotates everyone to new partners.
+Empty corner cells stay empty (grid spots 1, 3, 7, and 9).
 
-Empty corner cells stay empty (the old code blanked grid spots 1, 3, 7, and 9).
+### Yearly rotation (not random)
+
+Pairings do **not** shuffle randomly. Name lists stay in a fixed order. Each time you click **Refresh Pairing**, the app:
+
+1. Increments `assignment_year` (used internally for rotation math)
+2. Records `last_refreshed` (today's date, shown in admin)
+
+The rotation offset is `assignment_year - 2026`. Each refresh shifts left, right, top, and bottom partners by one step:
+
+- **2026** → offset 0 (starting pairings)
+- **2027** → offset 1 (everyone gets new partners)
+- **2028** → offset 2, and so on
+
+Over a full cycle, each person connects with everyone in their group. No partner repeats from the year before.
+
+Example for Amanu:
+
+- Before refresh: Ken (top), Elias (left), Danu (right), Abesha (bottom)
+- After one refresh: Etalem, Eskender, Maya, Helah — all different
 
 ## What happened in this work
 
 ### 1. Inspected the live PythonAnywhere site
 
-- Public routes are `/` (all 39 cards) and `/grid/0` … `/grid/38` (one zoomed card).
-- No public admin, assign, or yearly-refresh URL.
-- `/static/` was accidentally serving Jinja templates (`index.html`, `grid.html`, plus leftover `index2.html` / `index3.html` / `grid2.html` / `grid3.html`).
-- The Python assignment file was **not** on the public site.
+- Public routes were `/` (all cards) and `/grid/0` … `/grid/38`.
+- No public admin URL. Assignment logic lived in Python only.
+- `/static/` accidentally exposed Jinja templates.
 
 ### 2. Found the original source on this PC
 
-The Cross-Connect workspace started empty. The Flask source was already in **Downloads**, then copied into `Copied from PythonAnywhere/`:
+Flask source was in **Downloads**, copied locally to `Copied from PythonAnywhere/` (gitignored backup). The live app matched `CrossConnectAll_V2.py`.
 
-- `CrossConnectAll_V2.py` — the combined app that matches the live site
-- `CrossConnect20s30sFlaskV4.py`, `CrossConnet30s40sFlaskV4.py` (typo in filename), `CrossConnect50s60sFlaskV4.py` — older split apps
-- Templates: `index (1).html` (live home), `grid.html` (live card), plus older index2/3 and grid2/3
-- `requirements.txt` from PythonAnywhere is a full environment dump (Flask plus unrelated packages). CrossConnect only needs Flask.
+### 3. Rebuilt for Netlify
 
-### 3. Rebuilt the app for Netlify
-
-PythonAnywhere runs Flask. Netlify hosts static files. The family site is generated as HTML in `site/` and can be deployed to Netlify. Flask still runs locally for preview and admin.
-
-Public look matches the original index/grid colors and copy.
+- Public site lives in `site/` and deploys to Netlify.
+- Pages load roster data from JSON and render cards with JavaScript (same colors as original).
+- Flask still runs locally at port 8000 for optional local preview.
 
 ### 4. GitHub
 
 Repo: [https://github.com/jaklilu/Cross-Connect](https://github.com/jaklilu/Cross-Connect)
 
-- Initialized local git, committed, pushed `main`.
-- Then **removed** `Copied from PythonAnywhere/` from GitHub. It remains on disk as a local backup and is gitignored. The running app does not use that folder.
+`Copied from PythonAnywhere/` is kept on disk only — not on GitHub.
 
-### 5. Admin
+### 5. Live admin on Netlify
 
-Password-protected admin at `/admin` or `/admin.html` to add/remove people, change age group, rename, start a new year (rotate pairings), edit page text.
-
-Admin is **not** included in the static Netlify site, so the public family site cannot change the roster.
+- Yellow **Admin** button on the home page → `/admin.html`
+- Password-protected login (Netlify Functions + Netlify Blobs for saved data)
+- Same features as local Flask admin: add/remove, fix ages, rename, refresh pairings, edit page text
+- Enter key submits the login form
 
 ## Current architecture
 
 ```
-Local Flask (http://127.0.0.1:8000)
-  ├── / and /grid/<n>     family site (same colors as original)
-  └── /admin              manage roster, ages, yearly refresh
+Netlify (live — what the family uses)
+  ├── /                     home page (JS renders all cards)
+  ├── /grid.html?index=N    one personal card
+  ├── /admin.html           admin dashboard
+  ├── /data/family.json     fallback roster (from git)
+  └── /.netlify/functions/
+        family.mjs          GET roster / PUT saved roster (auth required)
+        login.mjs           verify admin password
 
-data/family.json          source of truth (people, groups, list orders, page text)
-family.py                 load/save JSON, build 3x3 cards, add/remove/move/year
-app.py                    Flask routes
-templates/                index.html, grid.html, admin.html, admin_login.html
-build_static.py           writes site/index.html and site/grid/0.html … 38.html
-site/                     Netlify publish folder
-netlify.toml              publish = site; /grid/:index → /grid/:index.html
+Local Flask (optional — http://127.0.0.1:8000)
+  ├── / and /grid/<n>       server-rendered family site
+  └── /admin                same admin features, writes data/family.json
+
+data/family.json            source of truth in git (people, lists, page text, dates)
+family.py                   Python: load/save, build cards, roster ops, rotation
+site/js/family.js           JavaScript: same logic for Netlify
+build_static.py             copies data/family.json → site/data/family.json
+netlify.toml                publish = site; npm install + build on deploy
 ```
 
-Yearly refresh and roster edits update `data/family.json` and rebuild `site/`. The local Flask site updates immediately. The public Netlify site updates only after a git push (or a manual deploy of `site/`).
+On Netlify, admin saves go to **Netlify Blobs** (live data). If no blob exists yet, the site reads `site/data/family.json` from the deploy.
 
 ## Key files
 
 | Path | Role |
 |---|---|
-| `app.py` | Flask app: public pages + admin |
-| `family.py` | Assignment logic and roster operations |
-| `data/family.json` | Current people, age groups, shuffled list orders, welcome text |
-| `templates/index.html` | Home: all cards, original colors |
-| `templates/grid.html` | Personal card + tooltip |
-| `templates/admin.html` | Management dashboard |
-| `templates/admin_login.html` | Admin password page |
-| `build_static.py` | Generate Netlify files; deletes leftover grid HTML if the card count shrinks |
-| `site/` | Static output for Netlify |
-| `netlify.toml` | Publish directory and grid URL redirects |
-| `requirements.txt` | Flask, Jinja2, Werkzeug only |
-| `.env` | `ADMIN_PASSWORD` and `SECRET_KEY` (gitignored) |
-| `Copied from PythonAnywhere/` | Local backup of original files (not on GitHub, not used at runtime) |
+| `site/index.html` | Live home page + Admin button |
+| `site/grid.html` | Live personal card page |
+| `site/admin.html` | Live admin login + dashboard |
+| `site/js/family.js` | Card logic, rotation, roster operations (JS) |
+| `site/js/api.js` | Fetch/save family data via Netlify Functions |
+| `site/js/admin.js` | Live admin UI |
+| `site/data/family.json` | Roster bundled with each deploy |
+| `netlify/functions/family.mjs` | API: read/write roster (password on write) |
+| `netlify/functions/login.mjs` | API: verify admin password |
+| `data/family.json` | Master roster in git |
+| `family.py` | Same logic in Python for Flask |
+| `app.py` | Local Flask app |
+| `templates/` | Flask HTML templates (local dev) |
+| `build_static.py` | Syncs `data/family.json` into `site/data/` |
+| `netlify.toml` | Netlify build and redirect config |
+| `package.json` | Netlify Functions dependency (`@netlify/blobs`) |
+| `.env` | Local `ADMIN_PASSWORD` and `SECRET_KEY` (gitignored) |
+| `Copied from PythonAnywhere/` | Local backup only (gitignored) |
 
-## Local run
+## URLs
 
-Flask should stay running:
+| Where | Family site | Admin |
+|---|---|---|
+| **Netlify (live)** | `https://YOUR-SITE.netlify.app/` | `https://YOUR-SITE.netlify.app/admin.html` |
+| **Local Flask** | [http://127.0.0.1:8000](http://127.0.0.1:8000) | [http://127.0.0.1:8000/admin](http://127.0.0.1:8000/admin) |
+
+Grid links: `/grid.html?index=0` (also `/grid/0` redirects on Netlify).
+
+## Admin password
+
+Default: **`CrossConnect2026`**
+
+- **Local:** set in `.env` as `ADMIN_PASSWORD`
+- **Netlify:** set the same in **Site configuration → Environment variables** as `ADMIN_PASSWORD`, then redeploy
+
+## Admin operations
+
+- **Add person:** adds to `people` and the assignment lists for that age group.
+- **Save age:** moves person to another group (updates all related lists).
+- **Rename:** updates name everywhere in lists.
+- **Remove:** deletes person from roster and all lists.
+- **Refresh Pairing:** rotates everyone to new partners; saves `last_refreshed` date. Button always says "Refresh Pairing" (no year in the label). Admin shows **Last refreshed** so you know when pairings were last changed.
+- **Save text:** welcome heading, intro line, browser title.
+
+Duplicate names are rejected (case-insensitive).
+
+## Recommended yearly workflow
+
+1. Open admin (live Netlify admin or local Flask).
+2. Fix ages — move people who aged into a new group.
+3. Click **Refresh Pairing**.
+4. Check **Last refreshed** date and skim a few cards on the family site.
+5. If using local Flask, run `python build_static.py` and push to git so the fallback JSON matches.
+
+## Local run (optional)
 
 ```
 python app.py
 ```
 
-- Family site: [http://127.0.0.1:8000](http://127.0.0.1:8000)
-- Admin: [http://127.0.0.1:8000/admin](http://127.0.0.1:8000/admin)
-
-Default admin password (change in `.env`): `CrossConnect2026`
-
-Rebuild static files without the admin UI:
+Flask serves at [http://127.0.0.1:8000](http://127.0.0.1:8000). Sync JSON to site folder:
 
 ```
 python build_static.py
@@ -158,27 +212,11 @@ python build_static.py
 
 ## Netlify deploy
 
-1. Manage people locally in admin (optional).
-2. Confirm `site/` was rebuilt (admin does this after each change).
-3. Push `main` to GitHub, **or** drag the `site` folder onto Netlify (Deploy manually).
+1. Connect GitHub repo to Netlify (or drag `site/` folder).
+2. Set `ADMIN_PASSWORD` in Netlify environment variables.
+3. Push to `main` — Netlify runs `npm install && python build_static.py` then publishes `site/`.
 
-`netlify.toml` already sets `publish = "site"`. Connecting the GitHub repo in Netlify is the long-term path.
-
-Do not deploy Flask to Netlify. Do not put `/admin` in the static site.
-
-## Admin operations (what each button does)
-
-- **Add person:** appends to `people` and to the assignment lists for that age group.
-- **Save age:** moves the person to another group (updates all related lists). Use this when someone ages into 20s, 30s/40s, 50s/60s, or 65+.
-- **Rename:** changes the name everywhere it appears in lists.
-- **Remove:** deletes the person from the roster and all lists.
-- **Refresh pairings for next year:** increments `assignment_year`, which rotates left, right, top, and bottom partners by one step. Everyone gets new partners each year; over a full cycle each person connects with everyone in their group.
-- **Save text:** welcome heading, intro line, browser title.
-- **Rebuild Netlify files:** regenerates `site/` without changing people.
-
-Duplicate names are rejected (case-insensitive).
-
-## 2026 roster snapshot (from the live site / All_V2)
+## 2026 roster snapshot
 
 **65 & over:** Ken, Etalem, Solomon, Vero, Tony, Chief, Hailelul, Martha, Joseph, Loreta, Senny, Belle, Membe
 
@@ -190,28 +228,25 @@ Duplicate names are rejected (case-insensitive).
 
 **50s & 60s:** Mesfin, Fubu, Zaren, Jay, Gilu, Mimi, Tutu, Mamiye, Sammy, Nany, Garae
 
-The 2026 **list orders** (who is next to whom) are stored in `data/family.json` under `lists`. They match the live PythonAnywhere assignment until someone clicks “new year.”
+List orders are in `data/family.json` under `lists`.
 
 ## Git notes
 
 - Remote: `https://github.com/jaklilu/Cross-Connect.git`
 - Branch: `main`
-- Ignored: `.env`, `Copied from PythonAnywhere/`, `__pycache__/`, `data/*.tmp`
-- `data/family.json` **should** be committed so pairings and roster survive and Netlify builds from the same source after `build_static.py`.
-
-As of this writing, admin + `family.json` may still be local-only if they have not been pushed yet. Push when the family site on Netlify should include the latest roster and when others need this context.
+- Ignored: `.env`, `Copied from PythonAnywhere/`, `node_modules/`, `__pycache__/`, `data/*.tmp`
+- Commit `data/family.json` and `site/data/family.json` when roster changes on the Flask/local side.
 
 ## What is intentionally not in this project
 
-- No database. Roster is JSON. Writes are atomic (temp file then replace).
-- No public accounts or family login.
-- No automatic calendar-year rotation. A new year is an admin action so pairings stay stable until someone chooses to refresh.
-- The old PythonAnywhere `requirements.txt` packages (PayPal, Twilio, Pulumi, Azure, etc.) are unrelated and were not carried into the new `requirements.txt`.
+- No database — roster is JSON; Netlify live saves use Blobs.
+- No public family login — only admin password.
+- No automatic calendar refresh — admin clicks **Refresh Pairing** when ready.
+- No random shuffle — rotation ensures everyone meets everyone over time.
 
-## Next steps (when returning to this project)
+## Next steps
 
-1. Confirm Flask is running on port 8000.
-2. Use `/admin` to correct ages before the family starts using cards.
-3. Deploy `site/` to Netlify (GitHub connect or drag-and-drop).
-4. After Netlify is verified, the PythonAnywhere site can be shut down.
-5. Each year: update ages in admin, then click the new-year refresh, then verify a few cards.
+1. Confirm Netlify site works and admin saves persist.
+2. Set `ADMIN_PASSWORD` on Netlify if not already done.
+3. Shut down PythonAnywhere once satisfied.
+4. Each year: fix ages → **Refresh Pairing** → verify cards.

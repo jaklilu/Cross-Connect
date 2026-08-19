@@ -1,11 +1,11 @@
 """Cousin's CrossConnect family roster and card assignment."""
 
 import json
-import random
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 DATA_PATH = ROOT / "data" / "family.json"
+BASE_YEAR = 2026
 
 GROUPS = [
     ("under12", "Under 12", "Bottom of each card — encourage and mentor"),
@@ -259,14 +259,15 @@ def update_settings(welcome, intro, site_title):
 
 
 def new_year():
-    """Reshuffle pairings and bump the assignment year."""
+    """Advance the assignment year so pairings rotate to new partners."""
     data = load_data()
-    rng = random.Random()
-    for names in data["lists"].values():
-        rng.shuffle(names)
-    data["assignment_year"] = int(data.get("assignment_year", 2026)) + 1
+    data["assignment_year"] = int(data.get("assignment_year", BASE_YEAR)) + 1
     save_data(data)
     return data["assignment_year"]
+
+
+def year_offset(data):
+    return int(data.get("assignment_year", BASE_YEAR)) - BASE_YEAR
 
 
 def format_value(value):
@@ -281,14 +282,14 @@ def _pick(names, index):
     return names[index % len(names)]
 
 
-def make_cards(centers, right_group, left_group, elders, kids):
+def make_cards(centers, right_group, left_group, elders, kids, offset=0):
     grids = []
     for i, name in enumerate(centers):
         grid = [[1, 2, 3], [4, name, None], [7, 8, 9]]
-        grid[1][2] = _pick(right_group, i + 1)
-        grid[1][0] = _pick(left_group, i)
-        grid[2][1] = _pick(kids, i)
-        grid[0][1] = _pick(elders, i)
+        grid[1][2] = _pick(right_group, i + 1 + offset)
+        grid[1][0] = _pick(left_group, i + offset)
+        grid[2][1] = _pick(kids, i + offset)
+        grid[0][1] = _pick(elders, i + offset)
         grids.append([[format_value(value) for value in row] for row in grid])
     return grids
 
@@ -297,6 +298,7 @@ def build_grids(data=None):
     if data is None:
         data = load_data()
     lists = data["lists"]
+    offset = year_offset(data)
     grids = []
     grids.extend(
         make_cards(
@@ -305,6 +307,7 @@ def build_grids(data=None):
             lists.get("thirties_for_20s", []),
             lists.get("elders_20s", []),
             lists.get("kids_20s", []),
+            offset,
         )
     )
     grids.extend(
@@ -314,6 +317,7 @@ def build_grids(data=None):
             lists.get("twenties_for_30s", []),
             lists.get("elders_30s", []),
             lists.get("kids_30s", []),
+            offset,
         )
     )
     grids.extend(
@@ -323,6 +327,7 @@ def build_grids(data=None):
             lists.get("thirties_for_50s", []),
             lists.get("elders_50s", []),
             lists.get("kids_50s", []),
+            offset,
         )
     )
     return grids

@@ -92,7 +92,7 @@ function renderAdmin() {
 
     <section>
       <h2>Start a new year</h2>
-      <p class="help">Reshuffles who sits left, right, top, and bottom on every card.</p>
+      <p class="help">Rotates everyone to new left, right, top, and bottom partners. Over time each person connects with everyone in their group — no repeats from the year before.</p>
       <button id="new-year-btn" class="year" type="button">Refresh pairings for ${Number(data.assignment_year) + 1}</button>
     </section>
 
@@ -135,7 +135,7 @@ async function persist(message) {
 function bindAdminEvents() {
   document.getElementById("new-year-btn").addEventListener("click", async () => {
     const next = Number(data.assignment_year) + 1;
-    if (!window.confirm(`Reshuffle all pairings and move to ${next}?`)) return;
+    if (!window.confirm(`Move pairings to ${next} with new partners for everyone?`)) return;
     try {
       newYear(data);
       await persist(`New year started. Pairings for ${data.assignment_year} are ready.`);

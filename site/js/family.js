@@ -1,3 +1,5 @@
+export const BASE_YEAR = 2026;
+
 export const GROUPS = [
   ["under12", "Under 12", "Bottom of each card — encourage and mentor"],
   ["20s30s", "20s & 30s", "Gets a personal card; chats with the same age group on the right"],
@@ -28,40 +30,48 @@ function formatValue(value) {
   return " ".repeat(left) + s + " ".repeat(pad - left);
 }
 
-function makeCards(centers, rightGroup, leftGroup, elders, kids) {
+function makeCards(centers, rightGroup, leftGroup, elders, kids, offset = 0) {
   return centers.map((name, i) => {
     const grid = [
-      [1, pick(elders, i), 3],
-      [pick(leftGroup, i), name, pick(rightGroup, i + 1)],
-      [7, pick(kids, i), 9],
+      [1, pick(elders, i + offset), 3],
+      [pick(leftGroup, i + offset), name, pick(rightGroup, i + 1 + offset)],
+      [7, pick(kids, i + offset), 9],
     ];
     return grid.map((row) => row.map(formatValue));
   });
 }
 
+export function yearOffset(data) {
+  return Number(data.assignment_year || BASE_YEAR) - BASE_YEAR;
+}
+
 export function buildGrids(data) {
   const lists = data.lists || {};
+  const offset = yearOffset(data);
   return [
     ...makeCards(
       lists.twenties || [],
       lists.twenties || [],
       lists.thirties_for_20s || [],
       lists.elders_20s || [],
-      lists.kids_20s || []
+      lists.kids_20s || [],
+      offset
     ),
     ...makeCards(
       lists.thirties || [],
       lists.thirties || [],
       lists.twenties_for_30s || [],
       lists.elders_30s || [],
-      lists.kids_30s || []
+      lists.kids_30s || [],
+      offset
     ),
     ...makeCards(
       lists.fifties || [],
       lists.fifties || [],
       lists.thirties_for_50s || [],
       lists.elders_50s || [],
-      lists.kids_50s || []
+      lists.kids_50s || [],
+      offset
     ),
   ];
 }
@@ -152,13 +162,7 @@ export function updateSettings(data, welcome, intro, siteTitle) {
 }
 
 export function newYear(data) {
-  for (const names of Object.values(data.lists)) {
-    for (let i = names.length - 1; i > 0; i -= 1) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [names[i], names[j]] = [names[j], names[i]];
-    }
-  }
-  data.assignment_year = Number(data.assignment_year || 2026) + 1;
+  data.assignment_year = Number(data.assignment_year || BASE_YEAR) + 1;
   return data.assignment_year;
 }
 

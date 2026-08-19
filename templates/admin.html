@@ -104,8 +104,8 @@
 
   <section>
     <h2>Start a new year</h2>
-    <p class="help">This reshuffles who sits left, right, top, and bottom on every card. Use it once a year after you have ages up to date.</p>
-    <form method="post" action="{{ url_for('admin_year') }}" onsubmit="return confirm('Reshuffle all pairings and move to {{ data.assignment_year + 1 }}?');">
+    <p class="help">Rotates everyone to new left, right, top, and bottom partners. Over time each person connects with everyone in their group — no repeats from the year before.</p>
+    <form method="post" action="{{ url_for('admin_year') }}" onsubmit="return confirm('Move pairings to {{ data.assignment_year + 1 }} with new partners for everyone?');">
       <button class="year" type="submit">Refresh pairings for {{ data.assignment_year + 1 }}</button>
     </form>
   </section>

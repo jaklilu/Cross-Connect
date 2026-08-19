@@ -60,7 +60,7 @@ For each card-holder group (20s&30s, then 30s&40s, then 50s&60s):
 - **Top:** next name in the 65+ list (cycled; each card-holder section has its own order of the same 13 elders)
 - **Bottom:** next name in the under-12 list (cycled; each section has its own kid order)
 
-There is no login or public “new year” button on the family site. A new year originally meant reordering the name lists by hand and reloading Flask. The admin page now does that with a shuffle.
+There is no login or public “new year” button on the family site. A new year originally meant reordering the name lists by hand and reloading Flask. The admin page now advances the assignment year, which rotates everyone to new partners.
 
 Empty corner cells stay empty (the old code blanked grid spots 1, 3, 7, and 9).
 
@@ -97,7 +97,7 @@ Repo: [https://github.com/jaklilu/Cross-Connect](https://github.com/jaklilu/Cros
 
 ### 5. Admin
 
-Password-protected Flask admin at `/admin` to add/remove people, change age group, rename, start a new year (reshuffle), edit page text, and rebuild the Netlify `site/` folder.
+Password-protected admin at `/admin` or `/admin.html` to add/remove people, change age group, rename, start a new year (rotate pairings), edit page text.
 
 Admin is **not** included in the static Netlify site, so the public family site cannot change the roster.
 
@@ -172,7 +172,7 @@ Do not deploy Flask to Netlify. Do not put `/admin` in the static site.
 - **Save age:** moves the person to another group (updates all related lists). Use this when someone ages into 20s, 30s/40s, 50s/60s, or 65+.
 - **Rename:** changes the name everywhere it appears in lists.
 - **Remove:** deletes the person from the roster and all lists.
-- **Refresh pairings for next year:** shuffles every assignment list and increments `assignment_year`. Do this after ages are corrected.
+- **Refresh pairings for next year:** increments `assignment_year`, which rotates left, right, top, and bottom partners by one step. Everyone gets new partners each year; over a full cycle each person connects with everyone in their group.
 - **Save text:** welcome heading, intro line, browser title.
 - **Rebuild Netlify files:** regenerates `site/` without changing people.
 
@@ -205,7 +205,7 @@ As of this writing, admin + `family.json` may still be local-only if they have n
 
 - No database. Roster is JSON. Writes are atomic (temp file then replace).
 - No public accounts or family login.
-- No automatic calendar-year shuffle. A new year is an admin action so pairings stay stable until someone chooses to refresh.
+- No automatic calendar-year rotation. A new year is an admin action so pairings stay stable until someone chooses to refresh.
 - The old PythonAnywhere `requirements.txt` packages (PayPal, Twilio, Pulumi, Azure, etc.) are unrelated and were not carried into the new `requirements.txt`.
 
 ## Next steps (when returning to this project)
@@ -214,4 +214,4 @@ As of this writing, admin + `family.json` may still be local-only if they have n
 2. Use `/admin` to correct ages before the family starts using cards.
 3. Deploy `site/` to Netlify (GitHub connect or drag-and-drop).
 4. After Netlify is verified, the PythonAnywhere site can be shut down.
-5. Each year: update ages in admin, then click the new-year reshuffle, then push to GitHub.
+5. Each year: update ages in admin, then click the new-year refresh, then verify a few cards.
